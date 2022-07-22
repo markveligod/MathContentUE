@@ -17,14 +17,34 @@ ARadialTriggerActor::ARadialTriggerActor()
 	BallMesh = CreateDefaultSubobject<UStaticMeshComponent>(FName("Ball static mesh component"));
 	BallMesh->SetupAttachment(SceneRoot);
 
-	UpdateEditorDraw();
+	const FVector DirPos = FVector(BallPosition,0.0f,0.0f);
+	BallMesh->SetRelativeLocation(DirPos);
+	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
+}
+
+void ARadialTriggerActor::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	MoveTimeline.TickTimeline(DeltaSeconds);
+	InflateTimeline.TickTimeline(DeltaSeconds);
 }
 
 // Called when the game starts or when spawned
 void ARadialTriggerActor::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	FOnTimelineFloat MoveTimelineCallback;
+	MoveTimelineCallback.BindDynamic(this, &ARadialTriggerActor::UpdateMoveTimeline);
+	MoveTimeline.AddInterpFloat(MoveCurve, MoveTimelineCallback);
+	MoveTimeline.SetLooping(true);
+	MoveTimeline.Play();
+
+	FOnTimelineFloat InflateTimelineCallback;
+	InflateTimelineCallback.BindDynamic(this, &ARadialTriggerActor::UpdateInflateTimeline);
+	InflateTimeline.AddInterpFloat(InflateCurve, InflateTimelineCallback);
+	InflateTimeline.SetLooping(true);
+	InflateTimeline.Play();
 }
 
 void ARadialTriggerActor::OnConstruction(const FTransform& Transform)
@@ -34,6 +54,22 @@ void ARadialTriggerActor::OnConstruction(const FTransform& Transform)
 	UpdateEditorDraw();
 }
 
+void ARadialTriggerActor::UpdateMoveTimeline(float NewValue)
+{
+	const FVector DirPos = FVector(NewValue,0.0f,0.0f);
+	BallMesh->SetRelativeLocation(DirPos);
+	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
+	FlushPersistentDebugLines(GetWorld());
+	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
+}
+
+void ARadialTriggerActor::UpdateInflateTimeline(float NewValue)
+{
+	RadiusTrigger = NewValue;
+	FlushPersistentDebugLines(GetWorld());
+	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
+}
+
 void ARadialTriggerActor::UpdateEditorDraw()
 {
 	const FVector DirPos = FVector(BallPosition,0.0f,0.0f);
@@ -41,19 +77,5 @@ void ARadialTriggerActor::UpdateEditorDraw()
 	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
 	FlushPersistentDebugLines(UMathProjectLibrary::GetWorldInEditor());
 	DrawDebugSphere(UMathProjectLibrary::GetWorldInEditor(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
-}
-
-void ARadialTriggerActor::UpdateGameDraw()
-{
-	FMath::FInterpTo(BallPosition,)
-	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,false, 0, 0, 2);
-}
-
-// Called every frame
-void ARadialTriggerActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-	UpdateGameDraw();
 }
 
