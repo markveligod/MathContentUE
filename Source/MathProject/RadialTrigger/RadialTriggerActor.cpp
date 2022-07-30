@@ -2,8 +2,9 @@
 
 
 #include "RadialTrigger/RadialTriggerActor.h"
-
 #include "Librarys/MathProjectLibrary.h"
+
+#pragma region Default
 
 // Sets default values
 ARadialTriggerActor::ARadialTriggerActor()
@@ -27,6 +28,8 @@ void ARadialTriggerActor::Tick(float DeltaSeconds)
 	Super::Tick(DeltaSeconds);
 	MoveTimeline.TickTimeline(DeltaSeconds);
 	InflateTimeline.TickTimeline(DeltaSeconds);
+
+	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,false, 0, 0, 2);
 }
 
 // Called when the game starts or when spawned
@@ -47,27 +50,21 @@ void ARadialTriggerActor::BeginPlay()
 	InflateTimeline.Play();
 }
 
+void ARadialTriggerActor::OnFlushPersistentDebug_Implementation(UWorld* World)
+{
+	UpdateEditorDraw();
+}
+
+#pragma endregion
+
+#pragma region EditorData
+
 void ARadialTriggerActor::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 
-	UpdateEditorDraw();
-}
-
-void ARadialTriggerActor::UpdateMoveTimeline(float NewValue)
-{
-	const FVector DirPos = FVector(NewValue,0.0f,0.0f);
-	BallMesh->SetRelativeLocation(DirPos);
-	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
-	FlushPersistentDebugLines(GetWorld());
-	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
-}
-
-void ARadialTriggerActor::UpdateInflateTimeline(float NewValue)
-{
-	RadiusTrigger = NewValue;
-	FlushPersistentDebugLines(GetWorld());
-	DrawDebugSphere(GetWorld(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
+	FlushPersistentDebugLines(UMathProjectLibrary::GetWorldInEditor());
+	UMathProjectLibrary::RestartPushDebugLine(UMathProjectLibrary::GetWorldInEditor());
 }
 
 void ARadialTriggerActor::UpdateEditorDraw()
@@ -75,7 +72,20 @@ void ARadialTriggerActor::UpdateEditorDraw()
 	const FVector DirPos = FVector(BallPosition,0.0f,0.0f);
 	BallMesh->SetRelativeLocation(DirPos);
 	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
-	FlushPersistentDebugLines(UMathProjectLibrary::GetWorldInEditor());
 	DrawDebugSphere(UMathProjectLibrary::GetWorldInEditor(), GetActorLocation(), RadiusTrigger, 12, ColorTrigger,true, 0, 0, 2);
+}
+
+#pragma endregion
+
+void ARadialTriggerActor::UpdateMoveTimeline(float NewValue)
+{
+	const FVector DirPos = FVector(NewValue,0.0f,0.0f);
+	BallMesh->SetRelativeLocation(DirPos);
+	ColorTrigger = ((GetActorLocation() + DirPos) - GetActorLocation()).Length() > RadiusTrigger ? FColor::Red : FColor::Green;
+}
+
+void ARadialTriggerActor::UpdateInflateTimeline(float NewValue)
+{
+	RadiusTrigger = NewValue;
 }
 

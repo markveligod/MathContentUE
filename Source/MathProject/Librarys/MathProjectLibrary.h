@@ -4,10 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "EngineUtils.h"
 #include "MathProjectLibrary.generated.h"
 
+UENUM(BlueprintType)
+enum class ELogVerb : uint8
+{
+	Display,
+	Warning,
+	Error
+};
+
+DEFINE_LOG_CATEGORY_STATIC(LogMath, All, All);
+#define LOG_MATH(LogVerb, Text) UMathProjectLibrary::Print_Log(LogVerb, Text, __LINE__, __FUNCTION__)
+
+
 /**
- * 
+ * @class Generalized Math project Functional Library
  */
 UCLASS()
 class MATHPROJECT_API UMathProjectLibrary : public UBlueprintFunctionLibrary
@@ -16,19 +29,25 @@ class MATHPROJECT_API UMathProjectLibrary : public UBlueprintFunctionLibrary
 
 public:
 
+	/**
+	 * @public Write a log
+	 **/
+	static void Print_Log(ELogVerb LogVerb, FString Text, int Line, const char* Function);
+	
 	UFUNCTION(BlueprintCallable, Category = "MathProjectLibrary")
-	static UWorld* GetWorldInEditor()
+	static UWorld* GetWorldInEditor();
+
+	UFUNCTION(BlueprintCallable, Category = "MathProjectLibrary")
+	static void RestartPushDebugLine(UWorld* World);
+
+	template<typename T>
+	static void FindAllActors(UWorld* InWorld, TArray<T*>& OutActors)
 	{
-		TIndirectArray<FWorldContext> LWorlds = GEngine->GetWorldContexts();
+		if (!InWorld) return;
 
-		for (FWorldContext LWorld : LWorlds)
+		for (TActorIterator<T> Iterator(InWorld); Iterator; ++Iterator)
 		{
-			if (LWorld.WorldType == EWorldType::Editor)
-			{
-				return LWorld.World();
-			}
+			OutActors.Add(*Iterator);
 		}
-
-		return nullptr;
 	}
 };
