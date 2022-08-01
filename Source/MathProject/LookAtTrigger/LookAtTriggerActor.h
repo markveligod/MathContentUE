@@ -55,25 +55,25 @@ private:
 
 	void UpdateDraw(UWorld* World, bool bPersistentLines);
 	
-	UPROPERTY(EditInstanceOnly, Category = "Setting Radius Trigger", meta = (ClampMin = "30.0", ClampMax = "150.0", ForceUnits = "cm"))
+	UPROPERTY(EditInstanceOnly, Category = "Setting Look At Trigger", meta = (ClampMin = "30.0", ClampMax = "150.0", ForceUnits = "cm"))
 	float RadiusTrigger{100.0f};
 
-	UPROPERTY(EditInstanceOnly, Category = "Setting Radius Trigger", meta = (ClampMin = "-200.0", ClampMax = "200.0", ForceUnits = "cm"))
+	UPROPERTY(EditInstanceOnly, Category = "Setting Look At Trigger", meta = (ClampMin = "-200.0", ClampMax = "200.0", ForceUnits = "cm"))
 	float BallPosition{0.0f};
 
-	UPROPERTY(EditInstanceOnly, Category = "Setting Radius Trigger", meta = (ClampMin = "-360.0", ClampMax = "360.0", ForceUnits = "deg"))
+	UPROPERTY(EditInstanceOnly, Category = "Setting Look At Trigger", meta = (ClampMin = "-360.0", ClampMax = "360.0", ForceUnits = "deg"))
 	float RotZAxis{0.0f};
 
-	UPROPERTY(EditInstanceOnly, Category = "Setting Radius Trigger", meta = (ClampMin = "0.01", ClampMax = "0.5", ForceUnits = "x"))
+	UPROPERTY(EditInstanceOnly, Category = "Setting Look At Trigger", meta = (ClampMin = "0.01", ClampMax = "0.5", ForceUnits = "x"))
 	float DeltaSuccessResult = 0.2f;
 
-	UPROPERTY(EditAnywhere, Category = "Setting Radius Trigger")
+	UPROPERTY(EditAnywhere, Category = "Setting Look At Trigger")
 	UCurveFloat* MoveBallCurve = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Setting Radius Trigger")
+	UPROPERTY(EditAnywhere, Category = "Setting Look At Trigger")
 	UCurveFloat* RotateBallCurve = nullptr;
 
-	UPROPERTY(EditAnywhere, Category = "Setting Radius Trigger")
+	UPROPERTY(EditAnywhere, Category = "Setting Look At Trigger")
 	UCurveFloat* InflateCurve = nullptr;
 	
 	FColor ColorDotResult = FColor::Red;
