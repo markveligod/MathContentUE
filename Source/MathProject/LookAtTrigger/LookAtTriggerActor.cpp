@@ -88,10 +88,6 @@ void ALookAtTriggerActor::UpdateDraw(UWorld* World, bool bPersistentLines)
 	const FVector ToSpherePos = BallMesh->GetComponentLocation() + DirToSphere * RadiusTrigger;
 	const float Result = FVector::DotProduct(BallMesh->GetForwardVector(), DirToSphere);
 	ColorDotResult = (Result >= 1.0f - DeltaSuccessResult) ? FColor::Orange : FColor::Red;
-
-#if WITH_EDITORONLY_DATA
-	LOG_MATH(ELogVerb::Display, FString::Printf(TEXT("Result dot product: %f"), Result));
-#endif
 	
 	DrawDebugSphere(World, GetActorLocation(), RadiusTrigger, 12, FColor::Cyan,bPersistentLines, 0, 0, 2);
 	DrawDebugDirectionalArrow(World, BallMesh->GetComponentLocation(), ForwardVector, 5.0f, ColorDotResult, bPersistentLines, 0, 0, 2);

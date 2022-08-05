@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/TimelineComponent.h"
 #include "GameFramework/Actor.h"
 #include "Librarys/FlushDebugInterface.h"
 #include "SpaceTransformActor.generated.h"
@@ -30,7 +31,7 @@ protected:
 
 private:
 
-	void UpdateDraw(UWorld* World, bool bPersistentLines);
+	void UpdateDraw(const UWorld* World, bool bPersistentLines) const;
 
 #pragma endregion 
 
@@ -56,10 +57,29 @@ protected:
 
 private:
 	UPROPERTY(EditInstanceOnly, Category = "Setting Space Transform")
-	FVector LocalTransform = FVector::ZeroVector;
+	FVector LocalTransform{FVector::ZeroVector};
+	UPROPERTY(EditInstanceOnly, Category = "Setting Space Transform")
+	FVector WorldTransform{FVector::ZeroVector};
+	UPROPERTY(EditInstanceOnly, Category = "Setting Space Transform", meta = (ClampMin = "150.0", ClampMax = "200.0", ForceUnits = "cm"))
+	float DistanceRenderText{150.0f};
+	UPROPERTY(EditAnywhere, Category = "Setting Space Transform")
+	UCurveFloat* MoveLocalTransformCurve{nullptr};
+	UPROPERTY(EditAnywhere, Category = "Setting Space Transform")
+	UCurveFloat* MoveWorldTransformCurve{nullptr};
 
+	FTimeline MoveLocalTransformTimeline;
+	FTimeline MoveWorldTransformTimeline;
 
-	FVector LocalToWorld();
+	float DelayLocalTransform{0.0f};
+	float DelayWorldTransform{0.0f};
+	
+	FVector LocalToWorld() const;
+	FVector WorldToLocal() const;
+
+	UFUNCTION()
+	void UpdateLocalTransformTimeline(float NewValue);
+	UFUNCTION()
+	void UpdateWorldTransformTimeline(float NewValue);
 
 #pragma endregion
 	
