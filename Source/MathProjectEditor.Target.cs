@@ -5,11 +5,11 @@ using System.Collections.Generic;
 
 public class MathProjectEditorTarget : TargetRules
 {
-	public MathProjectEditorTarget(TargetInfo Target) : base(Target)
-	{
-		Type = TargetType.Editor;
-		DefaultBuildSettings = BuildSettingsVersion.V2;
+    public MathProjectEditorTarget(TargetInfo Target) : base(Target)
+    {
+        Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.V2;
 
-		ExtraModuleNames.AddRange( new string[] { "MathProject" } );
-	}
+        ExtraModuleNames.AddRange(new string[] { "MathProject" });
+    }
 }

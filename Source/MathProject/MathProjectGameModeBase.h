@@ -7,11 +7,10 @@
 #include "MathProjectGameModeBase.generated.h"
 
 /**
- * 
+ *
  */
 UCLASS()
 class MATHPROJECT_API AMathProjectGameModeBase : public AGameModeBase
 {
-	GENERATED_BODY()
-	
+    GENERATED_BODY()
 };

@@ -10,19 +10,18 @@
 UINTERFACE(MinimalAPI)
 class UFlushDebugInterface : public UInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 };
 
 /**
- * 
+ *
  */
 class MATHPROJECT_API IFlushDebugInterface
 {
-	GENERATED_BODY()
+    GENERATED_BODY()
 
-	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
+    // Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Debug")
-	void OnFlushPersistentDebug(UWorld* World);
+    UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category = "Debug")
+    void OnFlushPersistentDebug(UWorld* World);
 };
